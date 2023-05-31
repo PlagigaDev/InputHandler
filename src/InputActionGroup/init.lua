@@ -1,3 +1,5 @@
+export type ActionGroup = {}
+
 local InputActionGroup = {}
 InputActionGroup.__index = {}
 
