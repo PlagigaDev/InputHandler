@@ -8,7 +8,7 @@ export type InputAction = {
 	_enabled: boolean,
 	_name: string,
 	listeners: {[string]: InputListener.Listener},
-	_inputActionGroup: InputActionGroup.ActionGroup,
+	_actionGroup: InputActionGroup.ActionGroup,
 	_inputBegin: BindableEvent,
 	_inputChange: BindableEvent,
 	_inputEnd: BindableEvent,
@@ -18,7 +18,7 @@ export type InputAction = {
 	setEnabled: (self: InputAction, value: boolean) -> (),
 	isPressed: (self: InputAction) -> (boolean),
 	readValue: (self: InputAction) -> (any),
-	addListener: (self: InputAction, inputType: InputTypes.InputType) -> (),
+	addListener: (self: InputAction, inputType: InputTypes.InputType, gameProcessed: boolean, enabled: boolean?) -> (),
 	removeListener: (self: InputAction, inputType: InputTypes.InputType) -> (),
 	connect: (self: InputAction, func: (delta: Vector3?, position: Vector3?) -> (), state: Enum.UserInputState) -> (RBXScriptConnection),
 	disconnect: (self: InputAction, connection: RBXScriptConnection) -> (),
@@ -37,7 +37,7 @@ function InputAction.new(inputActionGroup: InputActionGroup.ActionGroup, name: s
 		_enabled = enabled or true,
 		_name = name,
 		_listeners = {},
-		_inputActionGroup = inputActionGroup,
+		_actionGroup = inputActionGroup,
 		_inputBegin = Instance.new("BindableEvent"),
 		_inputChange = Instance.new("BindableEvent"),
 		_inputEnd = Instance.new("BindableEvent"),
@@ -87,11 +87,11 @@ function InputAction:readValue(): any
 	return Vector3.zero, Vector3.zero
 end
 
-function InputAction:addListener(inputType: InputTypes.InputType, gameProcessed: boolean)
+function InputAction:addListener(inputType: InputTypes.InputType, gameProcessed: boolean, enabled: boolean?)
 	if self.listener[inputType.Name] then
 		return
 	end
-	self.listener[inputType.Name] = InputListener.new(self,inputType,true, gameProcessed)
+	self.listener[inputType.Name] = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
 end
 
 function InputAction:removeListener(inputType: InputTypes.InputType)
@@ -109,7 +109,9 @@ function InputAction:disconnect(connection: RBXScriptConnection)
 end
 
 function InputAction:setName(name: string)
+	self._actionGroup.inputActions[self.name] = nil
 	self._name = name
+	self._actionGroup.inputActions[name] = self
 end
 
 function InputAction:getName(): string
@@ -122,6 +124,13 @@ end
 
 function InputAction:fire(inputState: Enum.UserInputState, delta: Vector3, position: Vector3)
 	self["_input".. inputState.Name]:Fire(delta, position)
+end
+
+function InputAction:destroy(): nil
+	for _, listener in pairs(self._listeners) do
+		listener:destroy()
+	end
+	self = nil
 end
 
 return InputAction
