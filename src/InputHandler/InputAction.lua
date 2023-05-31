@@ -46,17 +46,17 @@ function InputAction.new(inputActionGroup: InputActionGroup.ActionGroup, name: s
 end
 
 function InputAction:enable()
-	self._enabled = true
 	for _, listener in pairs(self._listeners) do
 		listener:enable()
 	end
+	self._enabled = true
 end
 
 function InputAction:disable()
-	self._enabled = false
 	for _, listener in pairs(self._listeners) do
 		listener:disable()
 	end
+	self._enabled = false
 end
 
 function InputAction:setEnabled(value: boolean)
@@ -109,9 +109,7 @@ function InputAction:disconnect(connection: RBXScriptConnection)
 end
 
 function InputAction:setName(name: string)
-	self._actionGroup.inputActions[self.name] = nil
 	self._name = name
-	self._actionGroup.inputActions[name] = self
 end
 
 function InputAction:getName(): string
