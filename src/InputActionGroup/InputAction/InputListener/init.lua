@@ -3,15 +3,15 @@ local Listener = {}
 Listener.__index = Listener
 
 
-function Listener.new(InputAction, ActionKey, ActionType, activeWhileInChat: boolean?)
-	return setmetatable({Parent = InputAction, InputRegister = ActionType, gameProcessed = activeWhileInChat or false},Listener)
+function Listener.new(InputAction, InputType, hasGameProcessed: boolean?)
+	return setmetatable({parent = InputAction, inputType = InputType, gameProcessed = hasGameProcessed or false},Listener)
 end
 
 function Listener:Connect()
 	if self.Listen and self.Listen.Connected then
 		self:Disconnect()
 	end
-	self.Listen = UserInputService[self.InputRegister]:Connect(function(input, gameProcessedEvent)
+	self.Listen = UserInputService[self.InputType]:Connect(function(input, gameProcessedEvent)
 		if not (self.gameProcessed == gameProcessedEvent) then return end
 
 	end)

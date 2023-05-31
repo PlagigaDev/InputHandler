@@ -3,10 +3,11 @@
   "tree": {
     "$className": "DataModel",
 
-    
-    "ServerScriptService": {
-      "InputHandler": {
-        "$path": "src"
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "InputHandler": {
+          "$path": "src"
+        }
       }
     },
 
