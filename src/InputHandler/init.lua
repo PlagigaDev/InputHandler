@@ -7,6 +7,18 @@ export type InputHandler = {
 	_commonTypes: {[string]: InputType.InputType},
 	_customTypes: {[string]: InputType.InputType},
 	new: () -> (InputHandler),
+	addActionGroup: (self: InputHandler, name:string,enabled:boolean?) -> (InputActionGroups.ActionGroup),
+	setActionGroupName: (self: InputHandler, oldName: string, newName: string) -> (),
+	getActionGroup: (name: string) -> (InputActionGroups.ActionGroup?),
+	removeActionGroup: (name: string) -> (),
+	addType: (value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?) -> (InputType.InputType),
+	getType: (name: string) -> (InputType.InputType?),
+	getTypes: () -> ({common: {InputType.InputType}, custom: {InputType.InputType}}),
+	getCommonType: (name: string) -> (InputType.InputType?),
+	getCommonTypes: () -> ({InputType.InputType}),
+	getCustomType: (name: string) -> (InputType.InputType),
+	getCustomTypes: () -> ({InputType.InputType}),
+	removeType: (name: string) -> ()
 }
 
 
@@ -26,6 +38,12 @@ function InputHandler:addActionGroup(name: string, enabled: boolean?): InputActi
 	return self._actionGroups[name]
 end
 
+function InputHandler:setActionGroupName(oldName: string, newName: string)
+	self._actionGroups[newName] = self._actionGroups[oldName]
+	self._actionGroups[newName]:setName(newName)
+	self._actionGroups[oldName] = nil
+end
+
 function InputHandler:getActionGroup(name: string): InputActionGroups.ActionGroup?
 	return self._actionGroups[name]
 end
@@ -37,7 +55,7 @@ function InputHandler:removeActionGroup(name: string)
 	self._actionGroups[name] = nil
 end
 
-function InputHandler:addInputType(value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?): InputType.InputType
+function InputHandler:addType(value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?): InputType.InputType
 	self._customTypes[name] = InputType.new(value,valueType,name,connection)
 	return self._customTypes[name]
 end
