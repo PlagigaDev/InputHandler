@@ -1,8 +1,8 @@
 local root = script.Parent
 local InputListener = require(root:WaitForChild("InputListener"))
 local InputActionGroup = require(root:WaitForChild("InputActionGroup"))
-local Enums = root:WaitForChild("Enums")
-local InputTypes = require(Enums:WaitForChild("InputType"))
+
+local InputType = require(root:WaitForChild("InputType"))
 
 export type InputAction = {
 	_enabled: boolean,
@@ -18,8 +18,8 @@ export type InputAction = {
 	setEnabled: (self: InputAction, value: boolean) -> (),
 	isPressed: (self: InputAction) -> (boolean),
 	readValue: (self: InputAction) -> (any),
-	addListener: (self: InputAction, inputType: InputTypes.InputType, gameProcessed: boolean, enabled: boolean?) -> (),
-	removeListener: (self: InputAction, inputType: InputTypes.InputType) -> (),
+	addListener: (self: InputAction, inputType: InputType.InputType, gameProcessed: boolean, enabled: boolean?) -> (),
+	removeListener: (self: InputAction, inputType: InputType.InputType) -> (),
 	connect: (self: InputAction, func: (delta: Vector3?, position: Vector3?) -> (), state: Enum.UserInputState) -> (RBXScriptConnection),
 	disconnect: (self: InputAction, connection: RBXScriptConnection) -> (),
 	setName: (self: InputAction, name: string) -> (),
@@ -87,14 +87,14 @@ function InputAction:readValue(): any
 	return Vector3.zero, Vector3.zero
 end
 
-function InputAction:addListener(inputType: InputTypes.InputType, gameProcessed: boolean, enabled: boolean?)
+function InputAction:addListener(inputType: InputType.InputType, gameProcessed: boolean, enabled: boolean?)
 	if self.listener[inputType.Name] then
 		return
 	end
 	self.listener[inputType.Name] = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
 end
 
-function InputAction:removeListener(inputType: InputTypes.InputType)
+function InputAction:removeListener(inputType: InputType.InputType)
 	if self.listener[inputType.Name] then
 		self.listener[inputType.Name]:destroy()
 	end

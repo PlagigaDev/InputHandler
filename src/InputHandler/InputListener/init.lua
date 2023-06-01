@@ -1,8 +1,6 @@
-local UserInputService = game:GetService("UserInputService")
-
 local root = script.Parent
-local Enums = root:WaitForChild("Enums")
-local InputTypes = require(Enums:WaitForChild("InputType"))
+
+local InputType = require(root:WaitForChild("InputType"))
 local InputAction = require(root:WaitForChild("InputAction"))
 local connectEvent = require(script:WaitForChild("connectEvent"))
 
@@ -10,19 +8,19 @@ export type Listener = {
 	_enabled: boolean,
 	_connected: boolean,
 	_inputAction: InputAction.InputAction,
-	_connectionType: InputTypes.InputType,
+	_connectionType: InputType.InputType,
 	_ignoreGameProcessed: boolean,
 	_gameProcessed: boolean,
 	_delta: Vector3,
 	_position: Vector3,
 	pressed: boolean,
-	new: (inputAction: InputAction.InputAction, inputType: InputTypes.InputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?) -> (Listener),
+	new: (inputAction: InputAction.InputAction, inputType: InputType.InputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?) -> (Listener),
 	enable: (self: Listener) -> (),
 	disable: (self: Listener) -> (),
 	setEnabled: (self: Listener, value: boolean) -> (),
 	connect: (self: Listener) -> (),
 	disconnect: (self: Listener) -> (),
-	changeInput: (self: Listener, inputType: InputTypes.InputType) -> (),
+	changeInput: (self: Listener, inputType: InputType.InputType) -> (),
 	getEnabled: (self: Listener) -> (boolean),
 	getDelta: (self: Listener) -> (Vector3),
 	getPosition: (self: Listener) -> (Vector3),
@@ -69,22 +67,19 @@ function Listener:setEnabled(value: boolean)
 	self:disable()
 end
 
-function Listener:_connectEvent(input: InputObject, gameProcessedEvent: boolean)
-	
-end
 
 function Listener:connect()
 	if self._connected then self:disconnect() end
 
-	self._listenBegan = UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+	self._listenBegan = self._connectionType.connection.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 		connectEvent(self,input,gameProcessedEvent)
 	end)
 
-	self._listenChanged = UserInputService.InputChanged:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+	self._listenChanged = self._connectionType.connection.InputChanged:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 		connectEvent(self, input, gameProcessedEvent)
 	end)
 
-	self._listenEnded = UserInputService.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+	self._listenEnded = self._connectionType.connection.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 		connectEvent(self, input, gameProcessedEvent)
 	end)
 
@@ -100,7 +95,7 @@ function Listener:disconnect()
 	self._connected = false
 end
 
-function Listener:changeInput(inputType: InputTypes.InputType)
+function Listener:changeInput(inputType: InputType.InputType)
 	self._connectionType = inputType
 	self:connect()
 end
