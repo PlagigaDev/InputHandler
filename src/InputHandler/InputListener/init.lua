@@ -1,38 +1,14 @@
 local root = script.Parent
 
+local ClassTypes = require(root:WaitForChild("ClassTypes"))
 local InputType = require(root:WaitForChild("InputType"))
-local InputAction = require(root:WaitForChild("InputAction"))
 local connectEvent = require(script:WaitForChild("connectEvent"))
-
-export type Listener = {
-	_enabled: boolean,
-	_connected: boolean,
-	_inputAction: InputAction.InputAction,
-	_connectionType: InputType.InputType,
-	_ignoreGameProcessed: boolean,
-	_gameProcessed: boolean,
-	_delta: Vector3,
-	_position: Vector3,
-	pressed: boolean,
-	new: (inputAction: InputAction.InputAction, inputType: InputType.InputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?) -> (Listener),
-	enable: (self: Listener) -> (),
-	disable: (self: Listener) -> (),
-	setEnabled: (self: Listener, value: boolean) -> (),
-	connect: (self: Listener) -> (),
-	disconnect: (self: Listener) -> (),
-	changeInput: (self: Listener, inputType: InputType.InputType) -> (),
-	getEnabled: (self: Listener) -> (boolean),
-	getDelta: (self: Listener) -> (Vector3),
-	getPosition: (self: Listener) -> (Vector3),
-	destroy: (self: Listener) -> nil
-}
-
 
 local Listener = {}
 Listener.__index = Listener
 
 
-function Listener.new(inputAction, inputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?): Listener
+function Listener.new(inputAction: ClassTypes.InputAction, inputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?): ClassTypes.Listener
 	local self = setmetatable({
 		_enabled = enabled or true,
 		_connected = false,
@@ -95,7 +71,7 @@ function Listener:disconnect()
 	self._connected = false
 end
 
-function Listener:changeInput(inputType: InputType.InputType)
+function Listener:changeInput(inputType: ClassTypes.InputType)
 	self._connectionType = inputType
 	self:connect()
 end

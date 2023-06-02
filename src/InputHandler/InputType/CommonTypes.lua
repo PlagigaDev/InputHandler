@@ -1,4 +1,4 @@
-local InputType = require(script.Parent:WaitForChild("InputType"))
+local InputType = require(script.Parent)
 
 local CommonTypes = {
 	MouseButton1 = InputType.new(Enum.UserInputType.MouseButton1, Enum.UserInputType, "MouseButton1"),

@@ -1,29 +1,12 @@
 local root = script.Parent
-local InputHandler = require(root)
-local InputAction = require(root:WaitForChild("InputAction"))
 
-export type ActionGroup = {
-	_enabled: boolean,
-	_name: string,
-	_inputActions: {[string]: InputAction.InputAction},
-	new: (inputHandler: InputHandler.InputHandler,name: string, enabled: boolean?) -> (ActionGroup),
-	enable: (self: ActionGroup) -> (),
-	disable: (self: ActionGroup) -> (),
-	setEnabled: (self: ActionGroup, value: boolean) -> (),
-	addAction: (self: ActionGroup, name: string, enabled: boolean?) -> (InputAction.InputAction),
-	getAction: (self: ActionGroup, name: string) -> (InputAction.InputAction?),
-	getAllActions: (self: ActionGroup) -> ({[string]: InputAction.InputAction}),
-	removeAction: (self: ActionGroup, name: string) -> (),
-	getEnabled: (self: ActionGroup) -> (boolean),
-	setActionName: (oldName: string, newName: string) -> (),
-	setName: (self: ActionGroup, name: string) -> (),
-	getName: (self: ActionGroup) -> (string)
-}
+local ClassTypes = require(root:WaitForChild("ClassTypes"))
+local InputAction = require(root:WaitForChild("InputAction"))
 
 local InputActionGroup = {}
 InputActionGroup.__index = {}
 
-function InputActionGroup.new(inputHandler: InputHandler.InputHandler, name: string, enabled: boolean?): ActionGroup
+function InputActionGroup.new(inputHandler: ClassTypes.InputHandler, name: string, enabled: boolean?): ClassTypes.ActionGroup
 	return setmetatable({
 		_enabled = enabled or true,
 		_name = name,
@@ -55,17 +38,17 @@ function InputActionGroup:setEnabled(value: boolean)
 	self:disable()
 end
 
-function InputActionGroup:addAction(name: string, enabled: boolean?): InputAction.InputAction
+function InputActionGroup:addAction(name: string, enabled: boolean?): ClassTypes.InputAction
 	local action = InputAction.new(self,name,enabled or self._enabled)
 	self._inputActions[name] = action
 	return action
 end
 
-function InputActionGroup:getAction(name: string): InputAction.InputAction?
+function InputActionGroup:getAction(name: string): ClassTypes.InputAction?
 	return self._inputActions[name]
 end
 
-function InputActionGroup:getAllActions(): {[string]: InputAction.InputAction}
+function InputActionGroup:getAllActions(): {[string]: ClassTypes.InputAction}
 	return self._inputActions
 end
 

@@ -1,6 +1,6 @@
-local InputListener = require(script.Parent)
+local ClassTypes = require(script.Parent.Parent:WaitForChild("ClassTypes"))
 
-return function(self: InputListener.Listener, input: InputObject, gameProcessedEvent: boolean)
+return function(self: ClassTypes.Listener, input: InputObject, gameProcessedEvent: boolean)
 	if (not self._ignoreGameProcessed) and (not (gameProcessedEvent == self._gameProcessed)) then return end
 	
 	if not self._connectionType:compare(input) then return end

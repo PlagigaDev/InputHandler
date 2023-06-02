@@ -1,38 +1,11 @@
 local root = script.Parent
+local ClassTypes = require(root:WaitForChild("ClassTypes"))
 local InputListener = require(root:WaitForChild("InputListener"))
-local InputActionGroup = require(root:WaitForChild("InputActionGroup"))
-
-local InputType = require(root:WaitForChild("InputType"))
-
-export type InputAction = {
-	_enabled: boolean,
-	_name: string,
-	listeners: {[string]: InputListener.Listener},
-	_actionGroup: InputActionGroup.ActionGroup,
-	_inputBegin: BindableEvent,
-	_inputChange: BindableEvent,
-	_inputEnd: BindableEvent,
-	new: (inputActionGroup: InputActionGroup.ActionGroup, name: string, enabled: boolean?) -> (InputAction),
-	enable: (self: InputAction) -> (),
-	disable: (self: InputAction) -> (),
-	setEnabled: (self: InputAction, value: boolean) -> (),
-	isPressed: (self: InputAction) -> (boolean),
-	readValue: (self: InputAction) -> (any),
-	addListener: (self: InputAction, inputType: InputType.InputType, gameProcessed: boolean, enabled: boolean?) -> (),
-	removeListener: (self: InputAction, inputType: InputType.InputType) -> (),
-	connect: (self: InputAction, func: (delta: Vector3?, position: Vector3?) -> (), state: Enum.UserInputState) -> (RBXScriptConnection),
-	disconnect: (self: InputAction, connection: RBXScriptConnection) -> (),
-	setName: (self: InputAction, name: string) -> (),
-	getName: (self: InputAction) -> (string),
-	getEnabled: (self: InputAction) -> (boolean),
-	fire: (self: InputAction, inputState: Enum.UserInputState, delta: Vector3, position: Vector3) -> ()
-}
-
 
 local InputAction = {}
 InputAction.__index = InputAction
 
-function InputAction.new(inputActionGroup: InputActionGroup.ActionGroup, name: string, enabled: boolean?): InputAction
+function InputAction.new(inputActionGroup: ClassTypes.ActionGroup, name: string, enabled: boolean?): ClassTypes.InputAction
 	return setmetatable({
 		_enabled = enabled or true,
 		_name = name,
@@ -87,14 +60,14 @@ function InputAction:readValue(): any
 	return Vector3.zero, Vector3.zero
 end
 
-function InputAction:addListener(inputType: InputType.InputType, gameProcessed: boolean, enabled: boolean?)
+function InputAction:addListener(inputType: ClassTypes.InputType, gameProcessed: boolean, enabled: boolean?)
 	if self.listener[inputType.Name] then
 		return
 	end
 	self.listener[inputType.Name] = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
 end
 
-function InputAction:removeListener(inputType: InputType.InputType)
+function InputAction:removeListener(inputType: ClassTypes.InputType)
 	if self.listener[inputType.Name] then
 		self.listener[inputType.Name]:destroy()
 	end

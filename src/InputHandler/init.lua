@@ -1,31 +1,13 @@
+local ClassTypes = require(script:WaitForChild("ClassTypes"))
+
 local InputType = require(script:WaitForChild("InputType"))
 local CommonTypes = require(script.InputType:WaitForChild("CommonTypes"))
 local InputActionGroups = require(script:WaitForChild("InputActionGroup"))
 
-export type InputHandler = {
-	_actionGroups: {[string]: InputActionGroups.ActionGroup},
-	_commonTypes: {[string]: InputType.InputType},
-	_customTypes: {[string]: InputType.InputType},
-	new: () -> (InputHandler),
-	addActionGroup: (self: InputHandler, name:string,enabled:boolean?) -> (InputActionGroups.ActionGroup),
-	setActionGroupName: (self: InputHandler, oldName: string, newName: string) -> (),
-	getActionGroup: (name: string) -> (InputActionGroups.ActionGroup?),
-	removeActionGroup: (name: string) -> (),
-	addType: (value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?) -> (InputType.InputType),
-	getType: (name: string) -> (InputType.InputType?),
-	getTypes: () -> ({common: {InputType.InputType}, custom: {InputType.InputType}}),
-	getCommonType: (name: string) -> (InputType.InputType?),
-	getCommonTypes: () -> ({InputType.InputType}),
-	getCustomType: (name: string) -> (InputType.InputType),
-	getCustomTypes: () -> ({InputType.InputType}),
-	removeType: (name: string) -> ()
-}
-
-
 local InputHandler = {}
 InputHandler.__index = InputHandler
 
-function InputHandler.new(): InputHandler
+function InputHandler.new(): ClassTypes.InputHandler
 	return setmetatable({
 		_actionGroups = {},
 		_commonTypes = CommonTypes,
@@ -33,7 +15,7 @@ function InputHandler.new(): InputHandler
 	},InputHandler)
 end
 
-function InputHandler:addActionGroup(name: string, enabled: boolean?): InputActionGroups.ActionGroup
+function InputHandler:addActionGroup(name: string, enabled: boolean?): ClassTypes.ActionGroup
 	self._actionGroups[name] = InputActionGroups.new(self,name,enabled)
 	return self._actionGroups[name]
 end
@@ -44,7 +26,7 @@ function InputHandler:setActionGroupName(oldName: string, newName: string)
 	self._actionGroups[oldName] = nil
 end
 
-function InputHandler:getActionGroup(name: string): InputActionGroups.ActionGroup?
+function InputHandler:getActionGroup(name: string): ClassTypes.ActionGroup?
 	return self._actionGroups[name]
 end
 
@@ -55,35 +37,35 @@ function InputHandler:removeActionGroup(name: string)
 	self._actionGroups[name] = nil
 end
 
-function InputHandler:addType(value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?): InputType.InputType
+function InputHandler:addType(value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?): ClassTypes.InputType
 	self._customTypes[name] = InputType.new(value,valueType,name,connection)
 	return self._customTypes[name]
 end
 
-function InputHandler:getType(name: string): InputType.InputType?
+function InputHandler:getType(name: string): ClassTypes.InputType?
 	if self._customTypes[name] then
 		return self._customTypes[name]
 	end
 	return self._commonTypes[name]
 end
 
-function InputHandler:getTypes(): {common: {InputType.InputType}, custom: {InputType.InputType}}
+function InputHandler:getTypes(): {common: {ClassTypes.InputType}, custom: {ClassTypes.InputType}}
 	return {common = self._commonTypes, custom = self._customTypes}
 end
 
-function InputHandler:getCommonType(name: string): InputType.InputType?
+function InputHandler:getCommonType(name: string): ClassTypes.InputType?
 	return self._commonTypes[name]
 end
 
-function InputHandler:getCommonTypes(): {InputType.InputType}
+function InputHandler:getCommonTypes(): {ClassTypes.InputType}
 	return self._commonTypes
 end
 
-function InputHandler:getCustomType(name: string): InputType.InputType?
+function InputHandler:getCustomType(name: string): ClassTypes.InputType?
 	return self._customTypes[name]
 end
 
-function InputHandler:getCustomTypes(): {InputType.InputType}
+function InputHandler:getCustomTypes(): {ClassTypes.InputType}
 	return self._customTypes
 end
 
