@@ -5,18 +5,31 @@ local ClassTypes = require(script.Parent:WaitForChild("ClassTypes"))
 local InputType = {}
 InputType.__index = InputType
 
-function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueType: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserStorageService | GuiButton)?): ClassTypes.InputType
+function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | GuiButton)?): ClassTypes.InputType
 	return setmetatable({
 		value = newValue,
-		valueType = newValueType,
+		valueBase = newValueBase,
 		name = newName,
 		connection = newConnection or UserInputService
 	},
 	InputType)
 end
 
+function InputType.from(inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiButton}): ClassTypes.InputType
+	return setmetatable(inputType,InputType)
+end
+
+function InputType:clone(): ClassTypes.InputType
+	local clone = table.clone(self)
+	return InputType.from(clone)
+end
+
+function InputType:setConnection(connection: UserInputService | GuiButton)
+	self.connection = connection
+end
+
 function InputType:compare(input: InputObject): boolean
-	return input[(tostring(self.valueType)):gsub("Enum.","")] == self.value
+	return input[(tostring(self.valueBase)):gsub("Enum.","")] == self.value
 end
 
 return InputType

@@ -60,11 +60,11 @@ function InputAction:readValue(): any
 	return Vector3.zero, Vector3.zero
 end
 
-function InputAction:addListener(inputType: ClassTypes.InputType, gameProcessed: boolean, enabled: boolean?, listenerStates: {Enum.UserInputState}?): ClassTypes.Listener
+function InputAction:addListener(inputType: ClassTypes.InputType, enabled: boolean?, gameProcessed: boolean?, ignoreGameProcessed: boolean?, listenerStates: {Enum.UserInputState}?): ClassTypes.Listener
 	if self._listeners[inputType.name] then
 		return
 	end
-	local listener = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
+	local listener = InputListener.new(self,inputType,enabled or self._enabled,ignoreGameProcessed, gameProcessed)
 
 	if listenerStates then
 		for _, state in pairs(listenerStates) do

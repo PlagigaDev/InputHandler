@@ -1,7 +1,7 @@
 local ClassTypes = require(script.Parent.Parent:WaitForChild("ClassTypes"))
 
 return function(self: ClassTypes.Listener, input: InputObject, gameProcessedEvent: boolean)
-	if (not self._ignoreGameProcessed) and (not (gameProcessedEvent == self._gameProcessed)) then return end
+	if gameProcessedEvent ~= nil and (not self._ignoreGameProcessed) and (not (gameProcessedEvent == self._gameProcessed)) then return end
 	
 	if not self._connectionType:compare(input) then return end
 

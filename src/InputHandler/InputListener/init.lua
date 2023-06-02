@@ -9,7 +9,7 @@ local Listener = {}
 Listener.__index = Listener
 
 
-function Listener.new(inputAction: ClassTypes.InputAction, inputType: ClassTypes.InputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?): ClassTypes.Listener
+function Listener.new(inputAction: ClassTypes.InputAction, inputType: ClassTypes.InputType, enabled: boolean?, gameProcessed: boolean?, ignoreGameProcessed: boolean?): ClassTypes.Listener
 	if inputAction == nil or inputType == nil then
 		error(string.format("Argument missing (inputAction: %s, inputType: %s)",inputAction,inputType))
 		return
@@ -30,6 +30,7 @@ function Listener.new(inputAction: ClassTypes.InputAction, inputType: ClassTypes
 end
 
 function Listener:enable()
+	self:reConnect()
 	self._enabled = true
 end
 
@@ -52,6 +53,7 @@ function Listener:connect(state)
 	if self._connected[state] then self:disconnect(state) end
 	
 	local connection: string = connectState(state)
+	
 	self._connected[state] = self._connectionType.connection["Input"..connection]:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 		connectEvent(self,input,gameProcessedEvent)
 	end)
@@ -72,14 +74,16 @@ function Listener:connectAll()
 end
 
 function Listener:disconnect(state)
-	self._connected[state]:Disconnect()
+	if self._connected then
+		self._connected[state]:Disconnect()
+	end
 	--for reconnection we keep the key value but change it to a bool value
 	self._connected[state] = false
 end
 
 function Listener:disconnectAll()
-	for _, connection in pairs(self._connected) do
-		connection:Disconnect()
+	for state, _ in pairs(self._connected) do
+		self:disconnect(state)
 	end
 end
 

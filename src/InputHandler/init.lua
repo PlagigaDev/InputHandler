@@ -37,9 +37,16 @@ function InputHandler:removeActionGroup(name: string)
 	self._actionGroups[name] = nil
 end
 
-function InputHandler:addType(value: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType | Enum.KeyCode, name: string, connection: (UserStorageService | GuiButton)?): ClassTypes.InputType
-	self._customTypes[name] = InputType.new(value,valueType,name,connection)
+function InputHandler:addType(value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, valueType: Enum.UserInputType, name: string, connection: (UserInputService | GuiButton)?): ClassTypes.InputType
+	self._customTypes[name] = InputType.new(value,valueBase, valueType,name,connection)
 	return self._customTypes[name]
+end
+
+function InputHandler:addFromType(typeName: string, name: string, connection: (UserInputService | GuiButton)): ClassTypes.InputType
+	local newType = self:getType(typeName):clone()
+	newType:setConnection(connection)
+	self._customTypes[name] = newType
+	return newType
 end
 
 function InputHandler:getType(name: string): ClassTypes.InputType?
