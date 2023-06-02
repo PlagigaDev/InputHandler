@@ -1,19 +1,24 @@
 local root = script.Parent
 
 local ClassTypes = require(root:WaitForChild("ClassTypes"))
-local InputType = require(root:WaitForChild("InputType"))
 local connectEvent = require(script:WaitForChild("connectEvent"))
+local connectState = require(script:WaitForChild("connectState"))
+local validState = require(script:WaitForChild("validState"))
 
 local Listener = {}
 Listener.__index = Listener
 
 
-function Listener.new(inputAction: ClassTypes.InputAction, inputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?): ClassTypes.Listener
+function Listener.new(inputAction: ClassTypes.InputAction, inputType: ClassTypes.InputType, enabled: boolean?, ignoreGameProcessed: boolean?, gameProcessed: boolean?): ClassTypes.Listener
+	if inputAction == nil or inputType == nil then
+		error(string.format("Argument missing (inputAction: %s, inputType: %s)",inputAction,inputType))
+		return
+	end
 	local self = setmetatable({
 		_enabled = enabled or true,
-		_connected = false,
-		_inputAction = inputAction,
+		_connected = {},
 		_connectionType = inputType,
+		_inputAction = inputAction,
 		_ignoreGameProcessed = ignoreGameProcessed or false,
 		_gameProcessed = gameProcessed or false,
 		_delta = Vector3.zero,
@@ -21,17 +26,15 @@ function Listener.new(inputAction: ClassTypes.InputAction, inputType, enabled: b
 		pressed = false
 	},
 	Listener)
-	self:connect()
 	return self
 end
 
 function Listener:enable()
-	self:connect()
 	self._enabled = true
 end
 
 function Listener:disable()
-	self:disconnect()
+	self:disconnectAll()
 	self._enabled = false
 end
 
@@ -44,36 +47,44 @@ function Listener:setEnabled(value: boolean)
 end
 
 
-function Listener:connect()
-	if self._connected then self:disconnect() end
-
-	self._listenBegan = self._connectionType.connection.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+function Listener:connect(state)
+	if not validState(state) then return end
+	if self._connected[state] then self:disconnect(state) end
+	
+	local connection: string = connectState(state)
+	self._connected[state] = self._connectionType.connection["Input"..connection]:Connect(function(input: InputObject, gameProcessedEvent: boolean)
 		connectEvent(self,input,gameProcessedEvent)
 	end)
-
-	self._listenChanged = self._connectionType.connection.InputChanged:Connect(function(input: InputObject, gameProcessedEvent: boolean)
-		connectEvent(self, input, gameProcessedEvent)
-	end)
-
-	self._listenEnded = self._connectionType.connection.InputEnded:Connect(function(input: InputObject, gameProcessedEvent: boolean)
-		connectEvent(self, input, gameProcessedEvent)
-	end)
-
-	self._connected = true
 end
 
-function Listener:disconnect()
-	self._listenBegin:Disconnect()
+function Listener:reConnect()
+	for state , connection in pairs(self._connected) do
+		if connection == false then
+			self:connect(state)
+		end
+	end
+end
 
-	self._listenChange:Disconnect()
+function Listener:connectAll()
+	self:connect(Enum.UserInputState.Begin)
+	self:connect(Enum.UserInputState.Change)
+	self:connect(Enum.UserInputState.End)
+end
 
-	self._listenEnd:Disconnect()
-	self._connected = false
+function Listener:disconnect(state)
+	self._connected[state]:Disconnect()
+	--for reconnection we keep the key value but change it to a bool value
+	self._connected[state] = false
+end
+
+function Listener:disconnectAll()
+	for _, connection in pairs(self._connected) do
+		connection:Disconnect()
+	end
 end
 
 function Listener:changeInput(inputType: ClassTypes.InputType)
 	self._connectionType = inputType
-	self:connect()
 end
 
 function Listener:getEnabled(): boolean

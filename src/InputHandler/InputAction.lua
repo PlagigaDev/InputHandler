@@ -60,16 +60,49 @@ function InputAction:readValue(): any
 	return Vector3.zero, Vector3.zero
 end
 
-function InputAction:addListener(inputType: ClassTypes.InputType, gameProcessed: boolean, enabled: boolean?)
-	if self.listener[inputType.Name] then
+function InputAction:addListener(inputType: ClassTypes.InputType, gameProcessed: boolean, enabled: boolean?, listenerStates: {Enum.UserInputState}?): ClassTypes.Listener
+	if self._listeners[inputType.name] then
 		return
 	end
-	self.listener[inputType.Name] = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
+	local listener = InputListener.new(self,inputType,enabled or self._enabled, gameProcessed)
+
+	if listenerStates then
+		for _, state in pairs(listenerStates) do
+			listener:connect(state)
+		end
+	end
+
+	self._listeners[inputType.name] = listener
+	return listener
+end
+
+function InputAction:getListener(name: string)
+	return self._listeners[name]
+end
+
+function InputAction:getListeners()
+	return self._listeners
+end
+
+function InputAction:addListernerState(name: string, state: Enum.UserInputState)
+	self._listeners[name]:connect(state)
+end
+
+function InputAction:addAllListernerStates(name: string)
+	self._listeners[name]:connectAll()
+end
+
+function InputAction:removeListernerState(name: string, state: Enum.UserInputState)
+	self._listeners[name]:disconnect(state)
+end
+
+function InputAction:removeAllListernerStates(name: string)
+	self._listeners[name]:disconnectAll()
 end
 
 function InputAction:removeListener(inputType: ClassTypes.InputType)
-	if self.listener[inputType.Name] then
-		self.listener[inputType.Name]:destroy()
+	if self._listeners[inputType.name] then
+		self._listeners[inputType.name]:destroy()
 	end
 end
 

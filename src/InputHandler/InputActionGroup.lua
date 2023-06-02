@@ -4,7 +4,7 @@ local ClassTypes = require(root:WaitForChild("ClassTypes"))
 local InputAction = require(root:WaitForChild("InputAction"))
 
 local InputActionGroup = {}
-InputActionGroup.__index = {}
+InputActionGroup.__index = InputActionGroup
 
 function InputActionGroup.new(inputHandler: ClassTypes.InputHandler, name: string, enabled: boolean?): ClassTypes.ActionGroup
 	return setmetatable({

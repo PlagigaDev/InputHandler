@@ -16,7 +16,7 @@ function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueType
 end
 
 function InputType:compare(input: InputObject): boolean
-	return input[self.valueType.Name] == self.value
+	return input[(tostring(self.valueType)):gsub("Enum.","")] == self.value
 end
 
 return InputType
