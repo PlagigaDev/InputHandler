@@ -5,7 +5,7 @@ local ClassTypes = require(script.Parent:WaitForChild("ClassTypes"))
 local InputType = {}
 InputType.__index = InputType
 
-function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | GuiButton)?): ClassTypes.InputType
+function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | RBXScriptSignal)?): ClassTypes.InputType
 	return setmetatable({
 		value = newValue,
 		valueBase = newValueBase,
@@ -15,7 +15,7 @@ function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase
 	InputType)
 end
 
-function InputType.from(inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiButton}): ClassTypes.InputType
+function InputType.from(inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | RBXScriptSignal}): ClassTypes.InputType
 	return setmetatable(inputType,InputType)
 end
 
@@ -24,7 +24,7 @@ function InputType:clone(): ClassTypes.InputType
 	return InputType.from(clone)
 end
 
-function InputType:setConnection(connection: UserInputService | GuiButton)
+function InputType:setConnection(connection: UserInputService | RBXScriptSignal)
 	self.connection = connection
 end
 

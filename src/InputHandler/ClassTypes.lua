@@ -32,7 +32,7 @@ export type InputAction = {
 	setEnabled: (self: InputAction, value: boolean) -> (),
 	isPressed: (self: InputAction) -> (boolean),
 	readValue: (self: InputAction) -> (any),
-	addListener: (self: InputAction, inputType: InputType, enabled: boolean?, gameProcessed: boolean?, ignoreGameProcessed: boolean?, listenerStates: {Enum.UserInputState}?) -> (Listener),
+	addListener: (self: InputAction, inputType: InputType, enabled: boolean?, gameProcessed: boolean?, listenerStates: {Enum.UserInputState}?) -> (Listener),
 	getListener: (self: InputAction, name:string) -> (Listener),
 	getListeners: (self: InputAction) -> ({[string]: Listener}),
 	addListenerState: (self: InputAction, name: string, state: Enum.UserInputState) -> (),
@@ -68,18 +68,18 @@ export type ActionGroup = {
 
 export type Listener = {
 	_enabled: boolean,
-	_connected: {[Enum.UserInputState]: RBXScriptConnection | false},
+	_connected: {[Enum.UserInputState]: boolean},
 	_inputAction: InputAction,
 	_connectionType: InputType,
-	_ignoreGameProcessed: boolean,
 	_gameProcessed: boolean,
 	_delta: Vector3,
 	_position: Vector3,
 	pressed: boolean,
-	new: (inputAction: InputAction, inputType: InputType, enabled: boolean?, gameProcessed: boolean?, ignoreGameProcessed: boolean?) -> (Listener),
+	new: (inputAction: InputAction, inputType: InputType, enabled: boolean?, gameProcessed: boolean?) -> (Listener),
 	enable: (self: Listener) -> (),
 	disable: (self: Listener) -> (),
 	setEnabled: (self: Listener, value: boolean) -> (),
+	actuate: (self: Listener, input: InputObject, gameProcessedEvent: boolean) -> (),
 	connect: (self: Listener, state: Enum.UserInputState) -> (),
 	reconnect: (self: Listener) -> (),
 	connectAll: (self: Listener) -> (),
@@ -100,7 +100,7 @@ export type InputType = {
 	new: (newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | GuiButton)?) -> (InputType),
 	from: (inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiButton}) -> (InputType),
 	clone: (self: InputType) -> (InputType),
-	setConnection: (self: InputType, connection: UserInputService | GuiButton) -> (),
+	setConnection: (self: InputType, connection: UserInputService | RBXScriptSignal) -> (),
 	compare: (self: InputType, input: InputObject) -> (boolean)
 }
 return {}
