@@ -10,9 +10,9 @@ If you encounter any feel free to open an Issue or make a pull request.
 ## Why would you want to use it?
 Despite ContextActionService doing similar things. This doesn't override the original input as it only uses UserInputService or a GuiObject to detect input.
 This brings me to my second advantage as you can set custom buttton actions to do the same thing as the input this can be used to make custom buttons for mobile or for pc and console.
-If you make an Inventory for example you can connect to an action that is maybe called 'toggleInventory' you can have an inventory button that triggers this function as well as an keybind like 'E'.
-This module also offers you the possibility to get if any button in an action is pressed using 'action:isPressed()'.
-This can be useful, if you foraxample want to make a custom camera so you check every frame, if for example the 'rightRotation' input is pressed to rotate the camera.
+If you make an Inventory for example you can connect to an action that is maybe called `toggleInventory` you can have an inventory button that triggers this function as well as an keybind like `E`.
+This module also offers you the possibility to get if any button in an action is pressed using `action:isPressed()`.
+This can be useful, if you foraxample want to make a custom camera so you check every frame, if for example the `rightRotation` input is pressed to rotate the camera.
 
 ## How to use it
 First you create a new Input Handler as give in the example Input.
