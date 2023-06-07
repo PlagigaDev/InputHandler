@@ -56,8 +56,12 @@ function actuateListeners(input: InputObject, gameProcessedEvent: boolean)
 	
 	for _, listener: ClassTypes.Listener in pairs(listenersToActuate) do
 		task.spawn(function()
-			if not (input.UserInputState == Enum.UserInputState.Change) and (listener._gameProcessed == nil or gameProcessedEvent == listener._gameProcessed) then
-				listener.pressed = not listener.pressed
+			if listener._gameProcessed == nil or gameProcessedEvent == listener._gameProcessed then
+				if input.UserInputState == Enum.UserInputState.Begin then
+					listener.pressed = true
+				elseif input.UserInputState == Enum.UserInputState.End then
+					listener.pressed = false
+				end
 				listener:actuate(input, gameProcessedEvent)
 			end
 		end)
