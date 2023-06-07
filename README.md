@@ -19,6 +19,6 @@ First you create a new Input Handler as give in the example Input.
 This can also be a private variable though I recommend using only one and having that work globally.
 Then you want to add an ActionGroup to your InputHandler, action groups are just a way to organize your input in diffrent categories.
 After that you can finaly start adding actual input actions. These are the actions you will have to listen to.
-Though the actions themselfs have to listen to the actual inputs using listeners, these listen to a specific input type, like "MouseButton1" or "L" which are part of the common input types, as they are already given by roblox.
+Though the actions themselfs have to listen to the actual inputs using listeners, these listen to a specific input type, like `MouseButton1` or `L` which are part of the common input types, as they are already given by roblox.
 You can also add your own input from GuiObjects, as shown in the example.
 
