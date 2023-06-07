@@ -5,7 +5,7 @@ local ClassTypes = require(script.Parent:WaitForChild("ClassTypes"))
 local InputType = {}
 InputType.__index = InputType
 
-function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | RBXScriptSignal)?): ClassTypes.InputType
+function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | GuiObject)?): ClassTypes.InputType
 	return setmetatable({
 		value = newValue,
 		valueBase = newValueBase,
@@ -15,7 +15,8 @@ function InputType.new(newValue: Enum.UserInputType | Enum.KeyCode, newValueBase
 	InputType)
 end
 
-function InputType.from(inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | RBXScriptSignal}): ClassTypes.InputType
+function InputType.from(inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiObject}, newConnection: (UserInputService | GuiObject)?): ClassTypes.InputType
+	inputType.connection = newConnection or UserInputService
 	return setmetatable(inputType,InputType)
 end
 

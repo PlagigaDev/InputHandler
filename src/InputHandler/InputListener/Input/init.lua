@@ -1,10 +1,11 @@
 local UserInputService = game:GetService("UserInputService")
 local ClassTypes = require(script.Parent.Parent:WaitForChild("ClassTypes"))
 
-local Input = {
-	_listeners = {
+local setCustomConnections = require(script:WaitForChild("setCustomConnection"))
 
-	}
+local Input = {
+	_listeners = {},
+	_customListeners = {}
 }
 
 function Input:addInputListener(listener: ClassTypes.Listener)
@@ -14,11 +15,17 @@ function Input:addInputListener(listener: ClassTypes.Listener)
 	table.insert(self._listeners[listener._connectionType.value],listener)
 end
 
+function Input:addCustomInputListen(listener: ClassTypes.Listener)
+	self._customListeners[listener._connectionType] = listener
+	setCustomConnections(listener)
+end
 
 function Input:addListener(listener: ClassTypes.Listener)
 	if listener._connectionType.connection == UserInputService then
 		self:addInputListener(listener)
+		return
 	end
+	self:addCustomInputListen(listener)
 end
 
 function Input:removeListener(listener: ClassTypes.Listener)
@@ -26,11 +33,9 @@ function Input:removeListener(listener: ClassTypes.Listener)
 	table.remove(currentValueTable,table.find(currentValueTable, listener))
 end
 
-function Input:addCustomInputListen(listener: ClassTypes.Listener)
-	listener._connectionType.connection:Connec
+function Input:removeCustomInputListen(listener: ClassTypes.Listener)
+	self._customListeners[listener._connectionType] = nil
 end
-
-
 
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	actuateListeners(input,gameProcessedEvent)
@@ -51,10 +56,10 @@ function actuateListeners(input: InputObject, gameProcessedEvent: boolean)
 	
 	for _, listener: ClassTypes.Listener in pairs(listenersToActuate) do
 		task.spawn(function()
-			if not (input.UserInputState == Enum.UserInputState.Change) then
+			if not (input.UserInputState == Enum.UserInputState.Change) and (listener._gameProcessed == nil or gameProcessedEvent == listener._gameProcessed) then
 				listener.pressed = not listener.pressed
+				listener:actuate(input, gameProcessedEvent)
 			end
-			listener:actuate(input, gameProcessedEvent)
 		end)
 	end
 end

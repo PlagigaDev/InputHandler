@@ -98,7 +98,7 @@ export type InputType = {
 	name: string,
 	connection: UserInputService | GuiButton,
 	new: (newValue: Enum.UserInputType | Enum.KeyCode, newValueBase: Enum.UserInputType | Enum.KeyCode, newName: string, newConnection: (UserInputService | GuiButton)?) -> (InputType),
-	from: (inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiButton}) -> (InputType),
+	from: (inputType: {value: Enum.UserInputType | Enum.KeyCode, valueBase: Enum.UserInputType | Enum.KeyCode, name: string, connection: UserInputService | GuiButton}, newConnection: (UserInputService | GuiButton)?) -> (InputType),
 	clone: (self: InputType) -> (InputType),
 	setConnection: (self: InputType, connection: UserInputService | RBXScriptSignal) -> (),
 	compare: (self: InputType, input: InputObject) -> (boolean)

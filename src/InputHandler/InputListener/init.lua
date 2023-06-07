@@ -47,10 +47,11 @@ function Listener:setEnabled(value: boolean)
 	self:disable()
 end
 
-function Listener:actuate(input: InputObject, gameProcessedEvent: boolean)
+function Listener:actuate(input: InputObject, gameProcessedEvent: boolean): boolean
 	if self._connected[input.UserInputState] then
-		connectEvent(self,input,gameProcessedEvent)
+		return connectEvent(self,input,gameProcessedEvent)
 	end
+	return false
 end
 
 function Listener:connect(state: Enum.UserInputState)

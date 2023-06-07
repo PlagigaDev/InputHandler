@@ -45,6 +45,7 @@ end
 function InputHandler:addFromType(typeName: string, name: string, connection: (UserInputService | GuiButton)): ClassTypes.InputType
 	local newType = self:getType(typeName):clone()
 	newType:setConnection(connection)
+	newType.name = name
 	self._customTypes[name] = newType
 	return newType
 end

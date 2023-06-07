@@ -61,6 +61,7 @@ function InputAction:readValue(): any
 end
 
 function InputAction:addListener(inputType: ClassTypes.InputType, enabled: boolean?, gameProcessed: boolean?, listenerStates: {Enum.UserInputState}?): ClassTypes.Listener
+	
 	if self._listeners[inputType.name] then
 		return
 	end
